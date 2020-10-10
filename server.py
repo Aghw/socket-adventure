@@ -135,19 +135,15 @@ class Server(object):
         :param argument: str
         :return: None
         """
-        if self.room == 0:
-            direction = {"west": 1, "east": 2, "north": 3}
-        
-        if self.room == 1:
-            direction = {"east": 0}
-        
-        if self.room == 2:
-            direction = {"west": 0}
-        
-        if self.room == 3:
-            direction = {"south": 0}
-        
-        self.room = direction[argument]
+
+        if argument in ["north", "south", "east", "west"]:
+            direction = {
+                0: {"west": 1, "east": 2, "north": 3, "south": 0},
+                1: {"west": 1, "east": 0, "north": 1, "south": 1},
+                2: {"west": 0, "east": 2, "north": 2, "south": 2},
+                3: {"west": 3, "east": 3, "north": 3, "south": 0},
+            }
+            self.room = direction[self.room][argument]
 
         self.output_buffer = self.room_description(self.room)
 
@@ -212,7 +208,7 @@ class Server(object):
         
         :return: None 
         """
-        self.client_connection.sendall(b"OK! " + self.output_buffer.endcode() + b"\n")
+        self.client_connection.sendall(b"OK! " + self.output_buffer.encode() + b"\n")
 
 
     def serve(self):
